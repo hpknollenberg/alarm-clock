@@ -17,3 +17,6 @@ create button
 button's function => get time, convert time to number (hoursx3600 + minutesx60 + seconds), converted time + 10 , if time=converted time + 10  then alarm
 
 # Start the alarm when the difference between the current time and the time the alarm is set for reaches 0 (use a javascript alert, no need for noise)
+
+# set alarm check
+
