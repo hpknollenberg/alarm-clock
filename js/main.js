@@ -4,7 +4,10 @@ const setAlarmButton = document.querySelector("#btn");
 function updateTime() {
     //Get time
     const date = new Date();
-    let [hours, minutes, seconds] = [
+    let [year, month, day, hours, minutes, seconds] = [
+        date.getFullYear(),
+        date.toLocaleString('default', { month: 'long' }),
+        date.getDate(),
         date.getHours(),
         date.getMinutes(),
         date.getSeconds()
@@ -26,10 +29,14 @@ function updateTime() {
         hours + ":" +
         minutes + ":" +
         seconds;
-
+    
+    //Display date
+    document.getElementById("date").innerHTML = 
+        month + " " +
+        day + ", " +
+        year;
 
     //Alarm
- 
     let convertedTime = (hours * 3600) + (minutes * 60) + seconds;
 
     setAlarmButton.addEventListener("click", () => {
