@@ -8,7 +8,7 @@ let alarmHasSound = false;
 
 
 function updateTime() {
-    //Get time
+    //Get date and time
     let date = new Date();
     let [year, month, day, hours, minutes, seconds] = [
         date.getFullYear(),
@@ -18,11 +18,35 @@ function updateTime() {
         date.getMinutes(),
         date.getSeconds()
     ];
+    let convertedTime = (hours * 3600) + (minutes * 60) + seconds;      //Convert time to seconds from 00:00:00
 
 
+
+    //Display time
+    function displayTime() {
+        if (hourFormat == true) {   //if 12-hour time is set ON
+            if (hours > 12) {
+            hours = hours - 12;
+            formatTime();
+            document.getElementById("clock").innerHTML =
+            hours + ":" +
+            minutes + ":" +
+            seconds;
+            }
+        } else {                    //if 12-hour time is set OFF
+            formatTime();
+            document.getElementById("clock").innerHTML =
+            hours + ":" +
+            minutes + ":" +
+            seconds;
+        }
+    }
+
+
+    
     //Formatting for hours, minutes, and seconds value
     function formatTime() {
-        if (seconds < 10) {
+        if (seconds < 10) {             //if seconds, minutes, or hours is less than ten, then add a 0 before it
             seconds = "0" + seconds;
         }
         if (minutes < 10) {
@@ -32,31 +56,8 @@ function updateTime() {
             hours = "0" + hours;
         }
     }
-
-
-    //Display time
-    function displayTime() {
-        if (hourFormat == true) {
-            if (hours > 12) {
-            hours = hours - 12;
-            formatTime();
-            document.getElementById("clock").innerHTML =
-            hours + ":" +
-            minutes + ":" +
-            seconds;
-            }
-        } else {
-            formatTime();
-            document.getElementById("clock").innerHTML =
-            hours + ":" +
-            minutes + ":" +
-            seconds;
-        }
-    }
-
     
 
-    
 
     //Display date
     document.getElementById("date").innerHTML = 
@@ -64,33 +65,6 @@ function updateTime() {
         day + ", " +
         year;
 
-
-    //Snooze
-    let convertedTime = (parseInt(hours) * 3600) + (parseInt(minutes) * 60) + parseInt(seconds);
-
-    setSnoozeButton.addEventListener("click", () => {
-        if (alarmHasSound == true) {
-            snoozeTime = convertedTime + 10;
-            stopSound();
-        }
-    });
-    
-    
-    if (snoozeTime == convertedTime) {
-        playSound();
-        alarmHasSound = true;
-        snoozeTime = null;
-    }
-
-
-    //Stop Alarm Button
-    offButton.addEventListener("click", () => {
-        if (alarmHasSound == true) {
-            stopSound();
-            snoozeTime = null;
-            alarmHasSound = false;
-        }
-    })
 
 
     //Input Alarm
@@ -102,23 +76,60 @@ function updateTime() {
         let alarmMinute = parseInt(alarm.split(":")[1]);
         let alarmSecond = parseInt(alarm.split(":")[2]);
 
-        inputAlarmTime = (alarmHour * 3600) + (alarmMinute * 60) + alarmSecond;
+        inputAlarmTime = (alarmHour * 3600) + (alarmMinute * 60) + alarmSecond;     //Convert time to seconds from 00:00:00
     })  
 
 
-    if (inputAlarmTime == convertedTime) {
+
+    //Alarm
+    if (inputAlarmTime == convertedTime) {      //If now equals the set alarm, then sound alarm
         playSound();
         alarmHasSound = true;
     }
 
 
-    displayTime();
-    
-//end of function
-}
 
-updateTime();
-setInterval(updateTime, 1000);
+    //Snooze
+    setSnoozeButton.addEventListener("click", () => {
+        if (alarmHasSound == true) {
+            snoozeTime = convertedTime + 10;       //New alarm (snoozeTime) equals now (when clicked) plus 5 minutes
+            stopSound();
+        }
+    });
+    
+
+
+    //Snoozed Alarm
+    if (snoozeTime == convertedTime) {      //If now equals the snoozeTime alarm, then sound alarm
+        playSound();
+        alarmHasSound = true;
+        snoozeTime = null;          //reset the snoozeTime alarm
+    }
+
+
+
+    //Stop Alarm Button
+    offButton.addEventListener("click", () => {
+        if (alarmHasSound == true) {
+            stopSound();
+            snoozeTime = null;
+            alarmHasSound = false;      //resets the alarm
+        }
+    })
+
+
+
+    displayTime();      //display time AFTER math
+    
+
+
+}       //end of update time function
+
+
+
+
+updateTime();       //update time on load
+setInterval(updateTime, 1000);      //update time every second
 
 
 
@@ -126,14 +137,17 @@ setInterval(updateTime, 1000);
 //alarm sound
 let alarmSound;
 
-function playSound() {
+function playSound() {      //when playSound function is called, an audio element is created
     alarmSound = new Audio('sound/alarm.mp3');
     alarmSound.play();
 }
 
-function stopSound() {
+function stopSound() {      //when stopSound function is called, the audio element is set to nothing
     alarmSound.setAttribute('src', '');
 }
+
+
+
 
 //12-24 Hour Time Button
 displayButton.addEventListener("click", () => {
