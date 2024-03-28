@@ -1,8 +1,11 @@
-let alarmTime;
+let snoozeTime;
 let inputAlarmTime;
-const setAlarmButton = document.querySelector("#btn");
+const setSnoozeButton = document.querySelector("#snooze-btn");
 const displayButton = document.querySelector("#display");
-hourFormat = true;
+const offButton = document.querySelector("#alarm-off");
+let hourFormat = false;
+let alarmHasSound = false;
+
 
 function updateTime() {
     //Get time
@@ -51,7 +54,7 @@ function updateTime() {
         }
     }
 
-    displayTime();
+    
 
     
 
@@ -62,17 +65,32 @@ function updateTime() {
         year;
 
 
-    //Alarm 10-seconds
-    let convertedTime = (hours * 3600) + (minutes * 60) + seconds;
+    //Snooze
+    let convertedTime = (parseInt(hours) * 3600) + (parseInt(minutes) * 60) + parseInt(seconds);
 
-    setAlarmButton.addEventListener("click", () => {
-        alarmTime = (hours * 3600) + (minutes * 60) + seconds + 10;
+    setSnoozeButton.addEventListener("click", () => {
+        if (alarmHasSound == true) {
+            snoozeTime = convertedTime + 10;
+            stopSound();
+        }
     });
-
-    if (alarmTime == convertedTime) {
-        alert("It is " + hours + ":" + minutes + ":" + seconds + ".");
-        alarmTime = undefined;
+    
+    
+    if (snoozeTime == convertedTime) {
+        playSound();
+        alarmHasSound = true;
+        snoozeTime = null;
     }
+
+
+    //Stop Alarm Button
+    offButton.addEventListener("click", () => {
+        if (alarmHasSound == true) {
+            stopSound();
+            snoozeTime = null;
+            alarmHasSound = false;
+        }
+    })
 
 
     //Input Alarm
@@ -83,25 +101,39 @@ function updateTime() {
         let alarmHour = parseInt(alarm.split(":")[0]);
         let alarmMinute = parseInt(alarm.split(":")[1]);
         let alarmSecond = parseInt(alarm.split(":")[2]);
-        
-        if (hourFormat == true) {
-            if (alarmHour > 12) {
-                alarmHour = alarmHour - 12;
-            }
-        }
+
         inputAlarmTime = (alarmHour * 3600) + (alarmMinute * 60) + alarmSecond;
     })  
 
+
     if (inputAlarmTime == convertedTime) {
-        alert("It is " + hours + ":" + minutes + ":" + seconds + ".");
-        alarmTime = undefined;
+        playSound();
+        alarmHasSound = true;
     }
 
+
+    displayTime();
     
+//end of function
 }
 
 updateTime();
 setInterval(updateTime, 1000);
+
+
+
+
+//alarm sound
+let alarmSound;
+
+function playSound() {
+    alarmSound = new Audio('sound/alarm.mp3');
+    alarmSound.play();
+}
+
+function stopSound() {
+    alarmSound.setAttribute('src', '');
+}
 
 //12-24 Hour Time Button
 displayButton.addEventListener("click", () => {
@@ -115,4 +147,3 @@ displayButton.addEventListener("click", () => {
         document.getElementById("display").innerHTML = "24-Hour Time"
     }
 });
-
