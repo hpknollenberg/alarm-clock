@@ -123,7 +123,7 @@ function updateTime() {
     
 
 
-}       //end of function
+}       //end of update time function
 
 
 
