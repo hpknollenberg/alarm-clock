@@ -92,8 +92,13 @@ function updateTime() {
     //Snooze
     setSnoozeButton.addEventListener("click", () => {
         if (alarmHasSound == true) {
-            snoozeTime = convertedTime + 10;       //New alarm (snoozeTime) equals now (when clicked) plus 5 minutes
-            stopSound();
+            if (convertedTime < 86390) {
+                snoozeTime = convertedTime + 10;       //New alarm (snoozeTime) equals now (when clicked) plus 5 minutes
+                stopSound();
+            } else {
+                snoozeTime = convertedTime + 10 - 86400;    //In case snooze traverses midnight
+                stopSound();
+            }
         }
     });
     
